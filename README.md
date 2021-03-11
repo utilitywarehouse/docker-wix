@@ -1,5 +1,7 @@
 # Docker Wix
 
+[![Build Status](https://drone.prod.merit.uw.systems/api/badges/utilitywarehouse/docker-wix/status.svg)](https://drone.prod.merit.uw.systems/utilitywarehouse/docker-wix)
+
 This repository contains the Docker build files for a container that enables
 building Windows MSI packages from any system supporting Docker.
 
