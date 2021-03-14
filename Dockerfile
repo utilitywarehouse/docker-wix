@@ -39,6 +39,8 @@ WORKDIR /home/wine
 
 COPY make-aliases.sh /home/wine/make-aliases.sh
 
+RUN echo "wine ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
 # Install .NET framework and WiX Toolset binaries
 RUN wine wineboot && \
     wget https://dl.winehq.org/wine/wine-mono/6.0.0/wine-mono-6.0.0-x86.msi -nv -O mono.msi \
