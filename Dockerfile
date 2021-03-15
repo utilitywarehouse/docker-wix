@@ -5,7 +5,7 @@ ARG wine_uid
 ARG wine_gid
 
 # Wine 32Bit for running EXE
-RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 sudo wget ncurses-libs \
+RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 wget ncurses-libs \
 # Create a separate user for Wine
     && if [ -n "${wine_gid}" ] ; \
     then addgroup --system wine -g ${wine_gid} ; \
@@ -31,8 +31,6 @@ RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 sudo wget ncurses-libs \
     fi \
     && mkdir /wix \
     && chown wine:wine /wix
-
-RUN echo "wine ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Use the separate Wine user
 USER wine
