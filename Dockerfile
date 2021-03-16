@@ -34,7 +34,7 @@ RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 wget ncurses-libs \
 
 # winetricks
 RUN wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
-    -O /usr/local/bin/winetricks && chmod +x /usr/local/bin/winetricks
+    -nv -O /usr/local/bin/winetricks && chmod +x /usr/local/bin/winetricks
 
 # Use the separate Wine user
 USER wine
