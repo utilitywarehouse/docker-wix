@@ -30,11 +30,12 @@ RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 wget ncurses-libs \
       wine ;\
     fi \
     && mkdir /wix \
-    && chown wine:wine /wix
+    && chown wine:wine /wix \
+    && wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+       -nv -O /usr/local/bin/winetricks \
+    && chmod +x /usr/local/bin/winetricks
 
 # winetricks
-RUN wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
-    -nv -O /usr/local/bin/winetricks && chmod +x /usr/local/bin/winetricks
 
 # Use the separate Wine user
 USER wine
@@ -44,6 +45,7 @@ WORKDIR /home/wine
 COPY make-aliases.sh /home/wine/make-aliases.sh
 
 # Install .NET framework and WiX Toolset binaries
+# Run winetricks to setup .NET DLLs
 RUN wine wineboot && \
     wget https://dl.winehq.org/wine/wine-mono/6.0.0/wine-mono-6.0.0-x86.msi -nv -O mono.msi \
     && wine msiexec /i mono.msi \
@@ -52,10 +54,9 @@ RUN wine wineboot && \
     && mkdir wix \
     && unzip wix.zip -d wix \
     && rm -f wix.zip \
+    && winetricks --unattended --force dotnet48 \
+    && rm -rf /home/wine/.wine/drive_c/users/wine/Temp/* \
     && /home/wine/make-aliases.sh \
     && rm -f /home/wine/make-aliases.sh
-
-# Run winetricks to setup .NET DLLs
-RUN winetricks --unattended --force dotnet48
 
 WORKDIR /wix
