@@ -1,5 +1,5 @@
 FROM i386/alpine:3.13.2
-MAINTAINER Zach Wasserman <zach@dactiv.llc>
+MAINTAINER BTG <btg-engineering@uw.co.uk>
 
 ARG wine_uid
 ARG wine_gid
@@ -30,12 +30,7 @@ RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 wget ncurses-libs \
       wine ;\
     fi \
     && mkdir /wix \
-    && chown wine:wine /wix \
-    && wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
-       -nv -O /usr/local/bin/winetricks \
-    && chmod +x /usr/local/bin/winetricks
-
-# winetricks
+    && chown wine:wine /wix
 
 # Use the separate Wine user
 USER wine
@@ -54,9 +49,12 @@ RUN wine wineboot && \
     && mkdir wix \
     && unzip wix.zip -d wix \
     && rm -f wix.zip \
-    && winetricks --unattended --force dotnet48 \
-    && rm -rf /home/wine/.wine/drive_c/users/wine/Temp/* \
+    && wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+       -nv -O /home/wine/winetricks \
+    && chmod +x /home/wine/winetricks\
+    && /home/wine/winetricks --unattended --force dotnet48 \
+    && rm -rf /home/wine/.wine/drive_c/users/wine/Temp/* /home/wine/.cache/* \
     && /home/wine/make-aliases.sh \
-    && rm -f /home/wine/make-aliases.sh
+    && rm -f /home/wine/make-aliases.sh /home/wine/winetricks
 
 WORKDIR /wix
