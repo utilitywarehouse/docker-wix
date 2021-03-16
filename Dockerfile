@@ -12,25 +12,29 @@ RUN apk add --no-cache wine=4.0.3-r0 freetype=2.10.4-r1 wget ncurses-libs \
     else addgroup --system wine ; fi \
     && if [ -n "${wine_uid}" ] ; \
     then \
-    adduser \
-    --home /home/wine \
-    --disabled-password \
-    --shell /bin/bash \
-    --gecos "non-root user for Wine" \
-    --ingroup wine \
-    --u ${wine_uid} \
-    wine ; \
+      adduser \
+      --home /home/wine \
+      --disabled-password \
+      --shell /bin/bash \
+      --gecos "non-root user for Wine" \
+      --ingroup wine \
+      --u ${wine_uid} \
+      wine ; \
     else \
-    adduser \
-    --home /home/wine \
-    --disabled-password \
-    --shell /bin/bash \
-    --gecos "non-root user for Wine" \
-    --ingroup wine \
-    wine ;\
+      adduser \
+      --home /home/wine \
+      --disabled-password \
+      --shell /bin/bash \
+      --gecos "non-root user for Wine" \
+      --ingroup wine \
+      wine ;\
     fi \
     && mkdir /wix \
     && chown wine:wine /wix
+
+# winetricks
+RUN wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+    -O /usr/local/bin/winetricks && chmod +x /usr/local/bin/winetricks
 
 # Use the separate Wine user
 USER wine
@@ -38,7 +42,6 @@ ENV HOME=/home/wine WINEPREFIX=/home/wine/.wine WINEARCH=win32 PATH="/home/wine/
 WORKDIR /home/wine
 
 COPY make-aliases.sh /home/wine/make-aliases.sh
-
 
 # Install .NET framework and WiX Toolset binaries
 RUN wine wineboot && \
@@ -51,5 +54,8 @@ RUN wine wineboot && \
     && rm -f wix.zip \
     && /home/wine/make-aliases.sh \
     && rm -f /home/wine/make-aliases.sh
+
+# Run winetricks to setup .NET DLLs
+RUN winetricks --unattended --force dotnet48
 
 WORKDIR /wix
