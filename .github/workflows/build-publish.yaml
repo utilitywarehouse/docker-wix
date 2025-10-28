@@ -6,10 +6,18 @@ on:
     branches:
       - 'master'
 
+permissions:
+  contents: read
+
 jobs:
   docker:
     runs-on:  ubuntu-latest
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
